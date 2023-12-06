@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Current Weather</title>
+  <style>
+    body {
+      font-family: 'Times New Roman', sans-serif;
+      font-style: italic;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    #video-background {
+      position: fixed;
+      right: 0;
+      bottom:0;
+      min-width: 100%;
+      min-height: 100%;
+      z-index: -1;
+    }
+  
+     
+    .temperature,
+    .location {
+      opacity: 0; /* Initially hide elements */
+      transition: opacity 0.5s ease-in-out; /* Add transition effect */
+    }
+    .temperature.show,
+    .location.show {
+      opacity: 1; /* Show elements with fade-in effect */
+    }
+    .temperature {
+      font-size: 7em;
+      margin-bottom: 20px;
+      color:antiquewhite
+    }
+    .location {
+      font-size: 3.5em;
+      color:beige
+    }
+    h1 {
+        color: beige;
+    }
+    .user-input p {
+        color: azure;
+        font-size: 2em;
+    }
+  </style>
+</head>
+<body>
+  <video autoplay muted loop id="video-background">
+    <source src="video/pexels_videos_4329 (1080p).mp4">
+    Your browser does not support the video tag 
+  </video>
+  <h1>Current Weather</h1>
+  <div class="user-input">
+    <p>What city are you looking for?</p>
+    <input type="text" id="cityInput" placeholder="Enter city name">
+    <button onclick="getWeather()">Get Weather</button>
+  </div>
+  <div class="temperature" id="temperature"></div>
+  <div class="location" id="location"></div>
+
+  <script>
+    const apiKey = '6ca64f68a1239f174eaf1c30b4ee0f9b'; // Replace with your API key
+
+    function getWeather() {
+      const city = document.getElementById('cityInput').value;
+      const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`;
+
+      fetch(apiUrl)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          const temperatureElement = document.getElementById('temperature');
+          const locationElement = document.getElementById('location');
+
+          const temperature = data.main.temp;
+          const location = data.name;
+
+          temperatureElement.textContent = `${temperature}°C`;
+          locationElement.textContent = `Location: ${location}`;
+
+          // Add show class to trigger fade-in effect
+          temperatureElement.classList.add('show');
+          locationElement.classList.add('show');
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+          const temperatureElement = document.getElementById('temperature');
+          temperatureElement.textContent = 'Unable to fetch data';
+        });
+    }
+  </script>
+</body>
+</html>
